@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # root user
+export DEBIAN_FRONTEND=noninteractive
 
 # configuration
 PHP_VERSION=5.5.10
@@ -44,7 +45,8 @@ echo "php extensions"
 #memcached
 echo "intalling memcached ..."
 apt-get install memcached
-pecl install -yes memcache
+pecl uninstall memcache
+pecl install memcache
 # configurations files 
 echo "copying php conf files ..."
 strip /usr/local/bin/php-cgi
@@ -76,7 +78,11 @@ cp /vagrant/config/nginx/vhosts/php-dev.example.com.conf /usr/local/nginx/vhosts
 echo "installation done !"
 
 # mysql
-apt-get install -y -$MYSQL_ROOT_PASSWORD -$MYSQL_ROOT_PASSWORD mysql-server mysql-client
+echo "install mysql ..."
+apt-get -q -y install mysql-server
+mysqladmin -u root password $MYSQL_ROOT_PASSWORD
+apt-get install mysql-client
+echo "installation done !"
 
 # composer
 # need PHP cli
