@@ -1,0 +1,2 @@
+
+sudo CFLAGS="-march=native -O2" ./configure --prefix=/usr/local/php-5.5.4 --program-suffix=554 --with-zlib --with-bz2 --with-curl --with-config-file-scan-dir=/usr/local/php-5.5.4/etc --with-apxs2=/usr/local/apache2/bin/apxs --with-gd --with-mcrypt --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-libedit --with-openssl --with-tidy=shared --with-xsl --enable-exif --enable-gd-native-ttf --enable-intl --enable-mbstring --enable-soap=shared --disable-sqlite --enable-wddx --enable-zip --disable-cgi --disable-short-tags

@@ -1,0 +1,5 @@
+alias ll="ls -la --color=auto"
+alias ..="cd ../"
+alias ...="cd ../.."
+alias www="cd /var/www/ && ls -la --color=auto"
+alias php554="/usr/local/php-5.5.4/bin/php554"

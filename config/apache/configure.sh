@@ -1,0 +1,1 @@
+sudo ./configure --prefix=/usr/local/apache2 --enable-pie --enable-mods-shared=all --enable-so --disable-include --enable-deflate --enable-headers --enable-expires --enable-ssl=shared --enable-mpms-shared=all --with-mpm=worker --enable-rewrite --with-z=/home/apetitje/httpd-2.4.2/srclib/zlib --with-pcre=/usr/local/pcre --enable-module=ssl --with-included-apr

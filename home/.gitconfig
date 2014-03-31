@@ -1,0 +1,13 @@
+[user]
+    name = Adrien Petitjean
+    email = john.doe@foo.bar
+[color]
+    status=auto
+    branch=auto
+    interactive=auto
+    diff=auto
+[alias]
+    st = 'status'
+    co = 'checkout'
+	
+
