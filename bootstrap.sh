@@ -80,9 +80,7 @@ cp /vagrant/config/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 if [ ! -d /usr/local/nginx/vhosts ]; then
 	mkdir /usr/local/nginx/vhosts/
 fi
-if [ ! -f /vagrant/config/nginx/vhosts/php-dev.example.com.conf ]; then
-	cp /vagrant/config/nginx/vhosts/php-dev.example.com.conf /usr/local/nginx/vhosts/php-dev.example.com.conf
-fi
+cp /vagrant/config/nginx/vhosts/php-dev.example.com.conf /usr/local/nginx/vhosts/php-dev.example.com.conf
 echo "installation done !"
 
 # mysql
