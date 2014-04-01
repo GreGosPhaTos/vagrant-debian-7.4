@@ -4,6 +4,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 # configuration
 PHP_VERSION=5.5.10
+XDEBUG_VERSION=2.2.4
 NGINX_VERSION=1.5.12
 MYSQL_ROOT_PASSWORD=root
 
@@ -36,12 +37,18 @@ echo "fetching PHP source ..."
 cd /usr/local/src/
 wget $PHP_DOWNLOAD_URL
 tar -xvzf php-$PHP_VERSION.tar.gz
-cd php-$PHP_VERSION
+# static extensions
+cd php-$PHP_VERSION/ext/
+pecl download xdebug
+tar xzf xdebug-$XDEBUG_VERSION.tgz && mv xdebug-$XDEBUG_VERSION xdebug
+cd ../
+rm ./configure
+./buildconf --force
 echo "configure & install PHP ..."
-./configure --enable-fpm --with-mcrypt --with-zlib --enable-mbstring --enable-pdo --with-curl --disable-debug --with-pic --with-openssl --disable-rpath --enable-inline-optimization --with-bz2 --enable-xml --with-zlib --enable-sockets --enable-sysvsem --enable-sysvshm --enable-pcntl --enable-mbregex --with-mhash --with-xsl --enable-zip --with-pcre-regex --with-gd --without-pdo-sqlite --with-pdo-mysql --with-jpeg-dir=/usr/lib --with-png-dir=/usr/lib --with-freetype-dir=/usr/lib --with-mysql --with-mysqli
+./configure --enable-fpm --enable-xdebug --with-mcrypt --with-zlib --enable-mbstring --enable-pdo --with-curl --disable-debug --with-pic --with-openssl --disable-rpath --enable-inline-optimization --with-bz2 --enable-xml --with-zlib --enable-sockets --enable-sysvsem --enable-sysvshm --enable-pcntl --enable-mbregex --with-mhash --with-xsl --enable-zip --with-pcre-regex --with-gd --without-pdo-sqlite --with-pdo-mysql --with-jpeg-dir=/usr/lib --with-png-dir=/usr/lib --with-freetype-dir=/usr/lib --with-mysql --with-mysqli
 make && make install
-# extensions
-echo "php extensions"
+# dynamic extensions
+echo "php dynamics extensions"
 #memcached
 echo "intalling memcached ..."
 apt-get install memcached
@@ -53,6 +60,7 @@ strip /usr/local/bin/php-cgi
 cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
 chmod +x /etc/init.d/php-fpm
 cp /vagrant/config/php/php.ini /usr/local/lib/php.ini
+rm -R /etc/php/
 mkdir /etc/php/
 ln -s /usr/local/lib/php.ini /etc/php/php.ini
 cp /vagrant/config/php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
@@ -73,8 +81,12 @@ echo "installation ..."
 make & make install
 cp /vagrant/config/nginx/nginx /etc/init.d/nginx
 cp /vagrant/config/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
-mkdir /usr/local/nginx/vhosts/
-cp /vagrant/config/nginx/vhosts/php-dev.example.com.conf /usr/local/nginx/vhosts/php-dev.example.com.conf
+if [ ! -d /usr/local/nginx/vhosts ]; then
+	mkdir /usr/local/nginx/vhosts/
+fi
+if [ ! -f /vagrant/config/nginx/vhosts/php-dev.example.com.conf ]; then
+	cp /vagrant/config/nginx/vhosts/php-dev.example.com.conf /usr/local/nginx/vhosts/php-dev.example.com.conf
+fi
 echo "installation done !"
 
 # mysql
@@ -84,9 +96,26 @@ mysqladmin -u root password $MYSQL_ROOT_PASSWORD
 apt-get install mysql-client
 echo "installation done !"
 
+# mongodb
+echo "install mongodb ..."
+apt-get -y install mongodb
+echo "installation done !"
+
+# phpunit
+echo "installing phpunit ..."
+wget https://phar.phpunit.de/phpunit.phar
+chmod +x phpunit.phar
+mv phpunit.phar /usr/local/bin/phpunit
+echo "installation done !"
+
 # composer
 # need PHP cli
 echo "installing composer ..."
-cd /vagrant
-curl -sS https://getcomposer.org/installer | php
+if [ ! -d /tmp/exec/ ]; then
+	mkdir /tmp/exec/
+fi
+chmod 0777 /tmp/exec/
+cd /tmp/exec/
+curl -sS https://getcomposer.org/installer | /usr/local/bin/php
 mv composer.phar /usr/local/bin/composer
+echo "installation done !"
