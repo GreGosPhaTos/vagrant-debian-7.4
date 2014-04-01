@@ -4,7 +4,6 @@ export DEBIAN_FRONTEND=noninteractive
 
 # configuration
 PHP_VERSION=5.5.10
-XDEBUG_VERSION=2.2.4
 NGINX_VERSION=1.5.12
 MYSQL_ROOT_PASSWORD=root
 
@@ -37,23 +36,20 @@ echo "fetching PHP source ..."
 cd /usr/local/src/
 wget $PHP_DOWNLOAD_URL
 tar -xvzf php-$PHP_VERSION.tar.gz
-# static extensions
-cd php-$PHP_VERSION/ext/
-pecl download xdebug
-tar xzf xdebug-$XDEBUG_VERSION.tgz && mv xdebug-$XDEBUG_VERSION xdebug
-cd ../
-rm ./configure
-./buildconf --force
+cd php-$PHP_VERSION
 echo "configure & install PHP ..."
-./configure --enable-fpm --enable-xdebug --with-mcrypt --with-zlib --enable-mbstring --enable-pdo --with-curl --disable-debug --with-pic --with-openssl --disable-rpath --enable-inline-optimization --with-bz2 --enable-xml --with-zlib --enable-sockets --enable-sysvsem --enable-sysvshm --enable-pcntl --enable-mbregex --with-mhash --with-xsl --enable-zip --with-pcre-regex --with-gd --without-pdo-sqlite --with-pdo-mysql --with-jpeg-dir=/usr/lib --with-png-dir=/usr/lib --with-freetype-dir=/usr/lib --with-mysql --with-mysqli
+./configure --enable-fpm --with-mcrypt --with-zlib --enable-mbstring --enable-pdo --with-curl --disable-debug --with-pic --with-openssl --disable-rpath --enable-inline-optimization --with-bz2 --enable-xml --with-zlib --enable-sockets --enable-sysvsem --enable-sysvshm --enable-pcntl --enable-mbregex --with-mhash --with-xsl --enable-zip --with-pcre-regex --with-gd --without-pdo-sqlite --with-pdo-mysql --with-jpeg-dir=/usr/lib --with-png-dir=/usr/lib --with-freetype-dir=/usr/lib --with-mysql --with-mysqli
 make && make install
-# dynamic extensions
-echo "php dynamics extensions"
+# extensions
+echo "php extensions"
 #memcached
 echo "intalling memcached ..."
 apt-get install memcached
 pecl uninstall memcache
 pecl install memcache
+#xdebug
+pecl uninstall xdebug
+pecl install xdebug
 # configurations files 
 echo "copying php conf files ..."
 strip /usr/local/bin/php-cgi
